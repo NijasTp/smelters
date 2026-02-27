@@ -422,12 +422,14 @@ export const Profile: React.FC = () => {
             <div className="flex flex-col items-center mb-6 relative z-10">
                 <div className="relative group">
                     <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-soft bg-pink-50 flex items-center justify-center relative">
-                        {(viewingUser?.profile_photo_url || profile?.profile_photo_url) ? (
-                            <img
-                                src={viewingUser?.profile_photo_url || profile?.profile_photo_url}
-                                alt="Profile"
-                                className="w-full h-full object-cover"
-                            />
+                        {viewingUser ? (
+                            viewingUser.profile_photo_url ? (
+                                <img src={viewingUser.profile_photo_url} alt="Profile" className="w-full h-full object-cover" />
+                            ) : (
+                                <Heart className="w-12 h-12 text-pink-200" fill="currentColor" />
+                            )
+                        ) : profile?.profile_photo_url ? (
+                            <img src={profile.profile_photo_url} alt="Profile" className="w-full h-full object-cover" />
                         ) : (
                             <Heart className="w-12 h-12 text-pink-200" fill="currentColor" />
                         )}
