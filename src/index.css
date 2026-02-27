@@ -1,0 +1,79 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary-pink: #FF9AA2;
+  /* Soft Watermelon Pink */
+  --color-pastel-pink: #FFD1DC;
+  --color-cloud-white: #FBFCFF;
+  --color-soft-lavender: #E2E2FF;
+
+  --font-heading: "Fredoka", sans-serif;
+  --font-body: "Quicksand", sans-serif;
+
+  --shadow-cute: 0 10px 25px -5px rgba(255, 154, 162, 0.2);
+  --shadow-glass: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+}
+
+@layer base {
+  body {
+    @apply font-body text-slate-600 antialiased selection:bg-primary-pink/20;
+    min-height: 100vh;
+    background-color: #FFF5F6;
+    position: relative;
+  }
+
+  /* Main Background */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image: url('/src/assets/cute-background.jpg');
+    background-size: cover;
+    background-position: center;
+    z-index: -2;
+    pointer-events: none;
+  }
+
+  /* Soft Overlay to ensure contrast but not too bright */
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: rgba(255, 245, 246, 0.1);
+    backdrop-filter: blur(2px);
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  h1,
+  h2,
+  h3 {
+    @apply font-heading font-semibold tracking-tight;
+  }
+}
+
+@layer utilities {
+  .glass-card {
+    @apply bg-white/10 backdrop-blur-sm border border-white/50 shadow-glass rounded-[2rem];
+  }
+
+  .cute-button {
+    @apply bg-primary-pink text-white font-heading font-semibold px-6 py-3 rounded-2xl shadow-cute transition-all active:scale-95 disabled:opacity-50;
+  }
+
+  .animate-soft-bounce {
+    animation: soft-bounce 4s ease-in-out infinite;
+  }
+}
+
+@keyframes soft-bounce {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-8px);
+  }
+}
