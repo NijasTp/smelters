@@ -6,7 +6,7 @@ import { searchStickers, getTrendingStickers, type GiphySticker } from '../servi
 import { supabase } from '../services/supabase';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { Heart, Search, Type, Palette, Send, ArrowLeft, Trash2, X } from 'lucide-react';
+import { Heart, Search, Type, Palette, Send, ArrowLeft, Trash2, X, Loader2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
 
@@ -355,18 +355,17 @@ export const DiaryEditor: React.FC = () => {
     return (
         <div className="flex flex-col h-[100dvh] w-full max-w-full overflow-hidden bg-white/80 backdrop-blur-md relative sm:rounded-[2.5rem] sm:h-[85vh] sm:border-4 border-pink-50 shadow-cute animate-in zoom-in-95 duration-700">
 
-            {/* Top Bar - Clean Style */}
-            <div className="bg-white/60 backdrop-blur-sm p-4 flex justify-between items-center z-10 shrink-0 border-b border-pink-50">
-                <Link to="/" className="p-2 text-primary-pink hover:bg-pink-50 rounded-2xl transition-all shadow-sm">
+            {/* Minimal Floating Top Bar */}
+            <div className="absolute top-0 left-0 right-0 p-4 flex justify-between items-center z-50 pointer-events-none">
+                <Link to="/" className="p-3 bg-white/60 backdrop-blur-md text-primary-pink hover:bg-white rounded-2xl transition-all shadow-sm pointer-events-auto">
                     <ArrowLeft size={24} />
                 </Link>
-                <h1 className="text-3xl font-fredoka text-slate-800">New Memory</h1>
                 <button
                     onClick={saveDiary}
                     disabled={saving || !partnerId}
-                    className="cute-button text-2xl disabled:opacity-50 flex items-center gap-2"
+                    className="p-3 bg-primary-pink text-white rounded-2xl shadow-cute disabled:opacity-50 flex items-center justify-center pointer-events-auto active:scale-95 transition-transform"
                 >
-                    {saving ? "Sending..." : <><Send size={20} /> Share</>}
+                    {saving ? <Loader2 size={24} className="animate-spin" /> : <Send size={24} />}
                 </button>
             </div>
 
@@ -380,7 +379,7 @@ export const DiaryEditor: React.FC = () => {
             <div className="flex-1 relative overflow-hidden touch-none bg-white">
                 <Stage
                     width={window.innerWidth}
-                    height={window.innerHeight - 180}
+                    height={window.innerHeight}
                     onMouseDown={checkDeselect}
                     onTouchStart={checkDeselect}
                     ref={stageRef}
@@ -428,24 +427,64 @@ export const DiaryEditor: React.FC = () => {
                     </Layer>
                 </Stage>
 
-                {/* Text Edit Modal - Sticker Style */}
+                {/* Text Edit & Style Modal Integrated */}
                 {editingText && (
-                    <div className="absolute inset-0 bg-primary-pink/10 backdrop-blur-sm z-50 flex items-center justify-center p-6">
-                        <div className="paper-card p-8 w-full max-w-sm rotate-1 animate-in zoom-in-95">
-                            <h3 className="font-handwriting text-3xl text-primary-pink mb-4">Write your heart out...</h3>
+                    <div className="absolute inset-0 bg-primary-pink/10 backdrop-blur-md z-50 flex items-center justify-center p-4">
+                        <div className="paper-card p-6 w-full max-w-sm rotate-1 animate-in zoom-in-95 flex flex-col gap-4">
+                            <h3 className="font-fredoka text-xl text-primary-pink">Edit Text ✨</h3>
+
+                            {/* Live Preview Textarea */}
                             <textarea
                                 value={editingText.val}
                                 onChange={e => setEditingText({ ...editingText, val: e.target.value })}
-                                className="w-full text-2xl font-handwriting border-none bg-transparent outline-none resize-none h-48 leading-relaxed text-slate-700"
+                                className="w-full text-2xl border-none bg-white/50 rounded-2xl p-4 outline-none resize-none h-40 leading-relaxed transition-all"
                                 autoFocus
                                 placeholder="Once upon a time..."
+                                style={{
+                                    fontFamily: elements.find(el => el.id === editingText.id)?.fontFamily || 'Fredoka',
+                                    color: elements.find(el => el.id === editingText.id)?.fill || '#4A4A4A'
+                                }}
                             />
+
+                            {/* Integrated Style Palette */}
+                            <div className="space-y-4">
+                                <div>
+                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Fonts</p>
+                                    <div className="flex gap-2 overflow-x-auto pb-2 container-snap">
+                                        {['Fredoka', 'Quicksand', 'Pacifico', 'Inter', 'Caveat', 'Comfortaa', 'Indie Flower', 'Shadows Into Light'].map(f => (
+                                            <button
+                                                key={f}
+                                                onClick={() => setElements(elements.map(e => e.id === editingText.id ? { ...e, fontFamily: f } : e))}
+                                                className={`px-4 py-2 rounded-xl border-2 shrink-0 transition-all text-sm ${elements.find(e => e.id === editingText.id)?.fontFamily === f ? 'border-primary-pink bg-pink-50 text-primary-pink' : 'border-pink-50 bg-white text-slate-600'}`}
+                                                style={{ fontFamily: f }}
+                                            >
+                                                {f}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Colors</p>
+                                    <div className="flex gap-3 overflow-x-auto pb-2 container-snap">
+                                        {['#FF9AA2', '#FFB7B2', '#FFDAC1', '#E2F0CB', '#B5EAD7', '#C7CEEA', '#FDFD96', '#84B6F4', '#77DD77', '#FDBCB4', '#4A4A4A'].map(c => (
+                                            <button
+                                                key={c}
+                                                onClick={() => setElements(elements.map(e => e.id === editingText.id ? { ...e, fill: c } : e))}
+                                                className="w-8 h-8 rounded-full border-2 border-white shadow-sm shrink-0"
+                                                style={{ backgroundColor: c, border: elements.find(e => e.id === editingText.id)?.fill === c ? '2px solid #FF9AA2' : '2px solid white' }}
+                                            />
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+
                             <button
                                 onClick={() => {
                                     setElements(elements.map(el => el.id === editingText.id ? { ...el, text: editingText.val } : el));
                                     setEditingText(null);
                                 }}
-                                className="w-full bg-primary-pink text-white py-4 rounded-2xl font-bold font-handwriting text-3xl mt-6 shadow-float transition-all active:scale-95"
+                                className="w-full bg-primary-pink text-white py-4 rounded-2xl font-bold font-fredoka shadow-float transition-all active:scale-95 text-xl"
                             >
                                 Done
                             </button>
@@ -507,44 +546,50 @@ export const DiaryEditor: React.FC = () => {
                 </div>
             )}
 
-            {/* Bottom Toolbar - Layered Paper Style */}
-            <div className="bg-white/60 backdrop-blur-xl p-6 flex justify-around items-center z-10 shrink-0 border-t border-primary-pink/10 pb-12 sm:pb-8">
-                <button onClick={addText} className="flex flex-col items-center gap-2 group">
-                    <div className="p-4 bg-antique-cream rounded-2xl shadow-paper group-hover:scale-110 transition-transform text-slate-600">
-                        <Type size={28} />
-                    </div>
-                    <span className="font-cursive text-xl text-slate-500">Text</span>
-                </button>
-
-                <button onClick={() => setShowStickers(true)} className="flex flex-col items-center gap-2 group">
-                    <div className="p-4 bg-antique-cream rounded-2xl shadow-paper group-hover:scale-110 transition-transform text-pink-400">
-                        <Heart size={28} fill="currentColor" />
-                    </div>
-                    <span className="font-cursive text-xl text-slate-500">Sticker</span>
-                </button>
-
-                {selectedId && elements.find(e => e.id === selectedId)?.type === 'text' && (
-                    <button
-                        onClick={() => setShowStyleModal(true)}
-                        className="flex flex-col items-center gap-2 group animate-in slide-in-from-bottom-2"
-                    >
-                        <div className="p-4 bg-antique-cream rounded-2xl shadow-paper group-hover:scale-110 transition-transform text-romantic-gold">
-                            <Palette size={28} />
+            {/* Bottom Toolbar - Compact on Mobile */}
+            <div className="absolute bottom-6 left-0 right-0 px-6 flex justify-around items-center z-10 pointer-events-none">
+                <div className="bg-white/40 backdrop-blur-xl p-3 sm:p-5 rounded-[2rem] flex justify-around items-center gap-4 sm:gap-8 border border-white/50 shadow-glass pointer-events-auto">
+                    <button onClick={addText} className="flex flex-col items-center gap-1 group">
+                        <div className="p-3 sm:p-4 bg-antique-cream rounded-xl sm:rounded-2xl shadow-paper group-hover:scale-110 transition-transform text-slate-600">
+                            <Type size={22} className="sm:w-7 sm:h-7" />
                         </div>
-                        <span className="font-cursive text-xl text-slate-500">Style</span>
+                        <span className="font-cursive text-xs sm:text-base text-slate-500">Text</span>
                     </button>
-                )}
 
-                <button
-                    onClick={deleteSelected}
-                    disabled={!selectedId}
-                    className={`flex flex-col items-center gap-2 transition-all ${selectedId ? 'group hover:scale-105' : 'opacity-30'}`}
-                >
-                    <div className="p-4 bg-antique-cream rounded-2xl shadow-paper text-slate-400 group-hover:text-red-400 transition-colors">
-                        <Trash2 size={28} />
-                    </div>
-                    <span className="font-cursive text-xl text-slate-500">Dustbin</span>
-                </button>
+                    <button onClick={() => setShowStickers(true)} className="flex flex-col items-center gap-1 group">
+                        <div className="p-3 sm:p-4 bg-antique-cream rounded-xl sm:rounded-2xl shadow-paper group-hover:scale-110 transition-transform text-pink-400">
+                            <Heart size={22} className="sm:w-7 sm:h-7" fill="currentColor" />
+                        </div>
+                        <span className="font-cursive text-xs sm:text-base text-slate-500">Sticker</span>
+                    </button>
+
+                    {selectedId && elements.find(e => e.id === selectedId)?.type === 'text' && (
+                        <button
+                            onClick={() => {
+                                selectShape(selectedId);
+                                const el = elements.find(e => e.id === selectedId);
+                                if (el) setEditingText({ id: el.id, val: el.text || '' });
+                            }}
+                            className="flex flex-col items-center gap-1 group animate-in slide-in-from-bottom-2"
+                        >
+                            <div className="p-3 sm:p-4 bg-antique-cream rounded-xl sm:rounded-2xl shadow-paper group-hover:scale-110 transition-transform text-romantic-gold">
+                                <Palette size={22} className="sm:w-7 sm:h-7" />
+                            </div>
+                            <span className="font-cursive text-xs sm:text-base text-slate-500">Style</span>
+                        </button>
+                    )}
+
+                    <button
+                        onClick={deleteSelected}
+                        disabled={!selectedId}
+                        className={`flex flex-col items-center gap-1 transition-all ${selectedId ? 'group hover:scale-105' : 'opacity-30'}`}
+                    >
+                        <div className="p-3 sm:p-4 bg-antique-cream rounded-xl sm:rounded-2xl shadow-paper text-slate-400 group-hover:text-red-400 transition-colors">
+                            <Trash2 size={22} className="sm:w-7 sm:h-7" />
+                        </div>
+                        <span className="font-cursive text-xs sm:text-base text-slate-500">Dustbin</span>
+                    </button>
+                </div>
             </div>
 
             {/* Giphy Sticker Drawer - Scrapbook Style */}
