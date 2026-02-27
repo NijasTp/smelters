@@ -6,7 +6,7 @@ import { searchStickers, getTrendingStickers, type GiphySticker } from '../servi
 import { supabase } from '../services/supabase';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { Heart, Search, Type, Palette, Save, ArrowLeft, Trash2, X } from 'lucide-react';
+import { Heart, Search, Type, Palette, Send, ArrowLeft, Trash2, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
 
@@ -353,7 +353,7 @@ export const DiaryEditor: React.FC = () => {
     };
 
     return (
-        <div className="flex flex-col h-[100dvh] w-full max-w-full overflow-hidden bg-white relative -m-6 sm:m-0 sm:rounded-[2.5rem] sm:h-[85vh] sm:border-4 border-pink-50 shadow-cute animate-in zoom-in-95 duration-700">
+        <div className="flex flex-col h-[100dvh] w-full max-w-full overflow-hidden bg-white/80 backdrop-blur-md relative sm:rounded-[2.5rem] sm:h-[85vh] sm:border-4 border-pink-50 shadow-cute animate-in zoom-in-95 duration-700">
 
             {/* Top Bar - Clean Style */}
             <div className="bg-white/60 backdrop-blur-sm p-4 flex justify-between items-center z-10 shrink-0 border-b border-pink-50">
@@ -364,9 +364,9 @@ export const DiaryEditor: React.FC = () => {
                 <button
                     onClick={saveDiary}
                     disabled={saving || !partnerId}
-                    className="cute-button text-2xl disabled:opacity-50"
+                    className="cute-button text-2xl disabled:opacity-50 flex items-center gap-2"
                 >
-                    {saving ? "Sending..." : <><Save size={20} /> Share</>}
+                    {saving ? "Sending..." : <><Send size={20} /> Share</>}
                 </button>
             </div>
 
@@ -379,8 +379,8 @@ export const DiaryEditor: React.FC = () => {
             {/* Editor Area - Clean White */}
             <div className="flex-1 relative overflow-hidden touch-none bg-white">
                 <Stage
-                    width={window.innerWidth > 768 ? 768 : window.innerWidth}
-                    height={window.innerHeight - 200}
+                    width={window.innerWidth}
+                    height={window.innerHeight - 180}
                     onMouseDown={checkDeselect}
                     onTouchStart={checkDeselect}
                     ref={stageRef}

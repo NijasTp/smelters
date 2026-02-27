@@ -109,7 +109,7 @@ export const DiaryViewer: React.FC = () => {
     }
 
     return (
-        <div className="flex flex-col h-[100dvh] w-full max-w-full overflow-hidden bg-white relative -m-6 sm:m-0 sm:rounded-[2.5rem] sm:h-[85vh] sm:border-4 border-pink-50 shadow-cute animate-in fade-in zoom-in-95 duration-1000">
+        <div className="flex flex-col h-[100dvh] w-full max-w-full overflow-hidden bg-white/80 backdrop-blur-md relative sm:rounded-[2.5rem] sm:h-[85vh] sm:border-4 border-pink-50 shadow-cute animate-in fade-in zoom-in-95 duration-1000">
             {/* Paper Texture Background */}
             <div className="absolute inset-0 opacity-[0.05] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/natural-paper.png')] z-0"></div>
             <div className="absolute inset-0 bg-[#fffdfa] z-[-1]"></div>
@@ -137,8 +137,8 @@ export const DiaryViewer: React.FC = () => {
             <div className="flex-1 relative overflow-hidden touch-none">
                 {elements.length > 0 ? (
                     <Stage
-                        width={window.innerWidth > 768 ? 768 : window.innerWidth}
-                        height={window.innerHeight - 180}
+                        width={window.innerWidth}
+                        height={window.innerHeight - 150}
                         ref={stageRef}
                         className="absolute inset-0 z-10 pointer-events-none animate-in fade-in slide-in-from-bottom-10 duration-1000 delay-300"
                     >

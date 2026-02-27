@@ -80,8 +80,8 @@ export const NotificationBell = () => {
 
             {showDrawer && (
                 <>
-                    <div className="fixed inset-0 z-40" onClick={() => setShowDrawer(false)}></div>
-                    <div className="absolute right-0 mt-4 w-80 min-w-[320px] glass-card z-50 p-4 border-pink-100 animate-in slide-in-from-top-2 duration-300 overflow-hidden bg-white/95 shadow-2xl">
+                    <div className="fixed inset-0 z-40 bg-black/5 sm:bg-transparent" onClick={() => setShowDrawer(false)}></div>
+                    <div className="absolute right-0 sm:right-0 mt-4 w-[calc(100vw-2rem)] sm:w-80 max-w-[320px] glass-card z-50 p-4 border-pink-100 animate-in slide-in-from-top-2 duration-300 overflow-hidden bg-white/95 shadow-2xl translate-x-[4.5rem] sm:translate-x-0">
                         <div className="flex justify-between items-center mb-4 border-b border-pink-50 pb-2 relative z-10">
                             <h3 className="text-lg font-heading text-primary-pink">Notifications</h3>
                             <button onClick={() => setShowDrawer(false)} className="text-slate-300 hover:text-primary-pink transition-colors"><X size={18} /></button>
